@@ -48,7 +48,7 @@ def clippify(request: clipRequest):
      finishedClip = subtitles.loadSubtitles(croppedClip, subtitle_clip_name, srtOutput)
      finishedClips.append(finishedClip)
      
-     clip_url = f"/clips/{clip_name}"
+     clip_url = f"/clippifyPython/{subtitle_clip_name}"
      finishedClips.append(clip_url)
      
      
