@@ -63,6 +63,8 @@ def loadSubtitles(video_path, output, srtOutput):
    final_video.write_videofile(output)
    os.remove(srtOutput)
 
+   
+
 
 
 

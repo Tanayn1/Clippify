@@ -36,8 +36,7 @@ def clippify(request: clipRequest):
     clips = segmentvideo.clip_video_with_timestamps(request.ytUrl, timestamps, output_folder) 
 
     finishedClips = []
-    public_clips_folder = 'public_clips'
-    os.makedirs(public_clips_folder, exist_ok=True)
+    
 
     for i, title in enumerate(titles) :
      clip = clips[i]
@@ -45,16 +44,15 @@ def clippify(request: clipRequest):
      clip_name= f"{titles[i]}.mp4"
      croppedClip = cropvideo2.resize_video_centered(clip, clip_name, faces)
      srtOutput = f"{titles[i]}.srt"
-     finishedClip = subtitles.loadSubtitles(croppedClip, clip_name, srtOutput)
+     subtitle_clip_name= f"{titles[i]}subtiltled.mp4"
+     finishedClip = subtitles.loadSubtitles(croppedClip, subtitle_clip_name, srtOutput)
      finishedClips.append(finishedClip)
-     public_clip_path = os.path.join(public_clips_folder, clip_name)
-     finishedClip.save(public_clip_path)
+     
      clip_url = f"/clips/{clip_name}"
      finishedClips.append(clip_url)
      
      
-    os.remove(audio)
-    os.remove(clips)
+    
 
 
     print('success', finishedClips) 

@@ -101,9 +101,9 @@ def resize_video_centered(input_file, output_file, faces):
         new_video = cropped_video
 
     # Write the new video to the output file with the codec parameter specified
-    croppedClip = new_video.write_videofile(output_file, codec='libx264')
+    new_video.write_videofile(output_file, codec='libx264')
 
-    return croppedClip
+    return output_file
 
     
 
