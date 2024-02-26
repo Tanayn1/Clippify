@@ -1,10 +1,19 @@
 from typing import Union
-from app.utils import transcribe, findClips, getTimestamps, segmentvideo, cropvideo2, subtitles
+from app.utils import transcribe, findClips, getTimestamps, segmentvideo, cropvideo2, creaotomateSubtitles
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os
+import boto3
 
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
+s3 = boto3.resource(
+    service_name = 's3',
+    region_name= 'ap-southeast-2',
+    aws_access_key_id = AWS_ACCESS_KEY_ID,
+    aws_secret_access_key = AWS_SECRET_ACCESS_KEY,
+)
 
 app = FastAPI()
 
@@ -42,14 +51,13 @@ def clippify(request: clipRequest):
      clip = clips[i]
      faces = cropvideo2.detect_faces(clip)
      clip_name= f"{titles[i]}.mp4"
-     croppedClip = cropvideo2.resize_video_centered(clip, clip_name, faces)
-     srtOutput = f"{titles[i]}.srt"
-     subtitle_clip_name= f"{titles[i]}subtiltled.mp4"
-     finishedClip = subtitles.loadSubtitles(croppedClip, subtitle_clip_name, srtOutput)
-     finishedClips.append(finishedClip)
-     
-     clip_url = f"/clippifyPython/{subtitle_clip_name}"
-     finishedClips.append(clip_url)
+     formmatedClipName = clip_name.replace(" ", "")
+     croppedClip = cropvideo2.resize_video_centered(clip, formmatedClipName, faces)
+     s3.meta.client.upload_file(croppedClip, 'clippifyvidsdemo', formmatedClipName)
+     objecturl = f"https://clippifyvidsdemo.s3.ap-southeast-2.amazonaws.com/{croppedClip}"
+     response = creaotomateSubtitles.generateSubtitles(objecturl)
+     finishedClips.append(response[0]['url'])
+   
      
      
     

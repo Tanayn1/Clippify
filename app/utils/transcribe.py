@@ -1,11 +1,15 @@
 import assemblyai as aai
 import os
 from pytube import YouTube
+import boto3
 
 from dotenv import load_dotenv
-
-
 load_dotenv()
+
+
+
+
+
 ASSEMBLY_API_KEY = os.getenv("ASSEMBLY_API_KEY")
 
 aai.settings.api_key = f"{ASSEMBLY_API_KEY}"
